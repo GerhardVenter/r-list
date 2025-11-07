@@ -89,3 +89,211 @@ fit <- lm(y ~ x + x2 + x3)
    Piecewise slope change: t-test on β2 / H0: β2 = 0
    Discontinuity: t-test on β3 / H0: β3 = 0
    Joint slope + discontinuity: partial F with 2 df / H0: β2 = β3 = 0
+
+9. General R Commands and Workspace Management
+   Clear console:
+   Ctrl + L  (keyboard shortcut)
+
+General Commands:
+
+* Clear environment variables: rm(list = ls())
+
+* Clear plots in RStudio:
+  if (dev.cur() > 1) dev.off()  # close current plot window
+  while (!is.null(dev.list())) dev.off()  # close all plots
+
+
+STAS202 FORMULA SHEET
+
+y = β0 + β1X1 + β2X2 + ... + βkXk + ε
+
+b1 = SSxy / SSxx
+
+SSxy = Σ(xi - x̄)(yi - ȳ) = Σ(xi * yi) - n * x̄ * ȳ
+
+SSxx = Σ(xi - x̄)² = Σ(xi²) - n(x̄)²
+
+SSyy = Σ(yi - ȳ)² = Σ(yi²) - n(ȳ)²
+
+SSyy = SSE / (1 - R²)
+
+b0 = ȳ - b1x̄
+
+s² = SSE / (n - 2)
+
+SSE = Σ(yi - ŷi)² = SSyy - b1SSxy
+
+σ(b1) = σ / √SSxx
+
+t = b1 / s(b1) = b1 / (s / √SSxx)
+
+Confidence interval for b1:
+b1 ± t(α/2) * s(b1)
+
+r = SSxy / √(SSxx * SSyy)
+
+t = r√(n - 2) / √(1 - r²)
+
+r² = (SSyy - SSE) / SSyy = 1 - SSE / SSyy
+
+σ(ŷ) = σ * √(1/n + (xp - x̄)² / SSxx)
+
+σ(y - ŷ) = σ * √(1 + 1/n + (xp - x̄)² / SSxx)
+
+Confidence interval for mean response:
+ŷ ± t(α/2) * s * √(1/n + (xp - x̄)² / SSxx)
+
+Prediction interval for individual response:
+ŷ ± t(α/2) * s * √(1 + 1/n + (xp - x̄)² / SSxx)
+
+b1 = (Σxi * yi) / (Σxi²)
+
+s² = SSE / (n - 1)
+
+SSE = Σyi² - b1Σxi * yi
+
+s(b1) = s / √(Σxi²)
+
+s(ŷ) = s * (xp / √(Σxi²))
+
+s(y - ŷ) = s * √(1 + xp² / Σxi²)
+
+t = (b1 - 0) / s(b1) = b1 / (s / √(Σxi²))
+
+Confidence interval for slope:
+b1 ± t(α/2) * s(b1) = b1 ± t(α/2) * (s / √(Σxi²))
+
+Confidence interval for mean response:
+ŷ ± t(α/2) * s(ŷ) = ŷ ± t(α/2) * s * (xp / √(Σxi²))
+
+Prediction interval for individual response:
+ŷ ± t(α/2) * s(y - ŷ) = ŷ ± t(α/2) * s * √(1 + xp² / Σxi²)
+
+t = bi / s(bi)
+
+F = ((SSE_R - SSE_C) / (k - g)) / (SSE_C / [n - (k + 1)])
+
+F = (SSyy / k) / (SSE / [n - (k + 1)])
+
+t_(n-(k+1)); α/2
+
+R² = 1 - SSE / SSyy
+
+Adjusted R²:
+R²a = 1 - [(n - 1) / (n - (k + 1))] * (SSE / SSyy)
+R²a = 1 - [(n - 1) / (n - (k + 1))] * (1 - R²)
+
+Fk; n-(k+1); α
+
+Fk-g; n-(k+1); α
+
+MSE = SSE / [n - (k + 1)]
+
+F = (R² / k) / ((1 - R²) / [n - (k + 1)])
+
+MSE = SSE / [n - (k + 1)]
+
+t_(n-(k+1)); α
+
+F = (SS(model) / k) / (SSE / [n - (k + 1)])
+
+R²(log(y)) = 1 - (Σ(yi - ŷi)² / Σ(yi - ȳ)²)
+
+(VIF)i = 1 / (1 - Ri²)
+
+Di = ((yi - ŷi)² / ((k + 1) * MSE)) * (hi / (1 - hi)²)
+
+H = X(X'X)^(-1)X'
+
+β̂ = (X'X)^(-1)X'y
+
+SS(total) = y'y - n(ȳ)²
+
+SSE = y'y - β̂'X'y
+
+s² = SSE / [n - (k + 1)]
+
+MS(model) = SS(model) / k
+
+Confidence interval for βi:
+βi ± t(n-(k+1); α/2) * s * √cii
+
+t = βi / (s * √cii)
+
+Confidence or prediction interval (matrix form):
+ŷ ± t(n-(k+1); α/2) * √(s² * a'(X'X)^(-1)a)
+
+ŷ ± t(n-(k+1); α/2) * √(s² * [1 + a'(X'X)^(-1)a])
+
+εi = yi - ŷi
+
+ε* = ε̂ - β̂j * xj
+
+F = Larger MSE / Smaller MSE
+
+A = (i - 0.375) / (n + 0.25)
+
+E(εi) ≈ √MSE * Z(A)
+
+h̄ = (k + 1) / n
+
+hi ≥ 2(k + 1) / n
+
+di = yi - ŷi
+
+F(k+1); n-(k+1); α
+
+DW = Σ(t=2 to n)(εt - ε(t-1))² / Σ(t=1 to n)εt²
+
+d*i = di / s(di)
+
+Confidence interval for predicted x:
+x̂ ± t(n-2); α/2 * (s / b1) * √(1 + 1/n + (x̂ - x̄)² / SSxx)
+
+x̂ = (yp - b0) / b1
+
+x̄ = Σx / n
+
+SSxx = Σx² - n(x̄)²
+
+s = √MSE
+
+D = [(t(n-2); α/2 * s / b1)²] * (1 / SSxx)
+
+WSSE = Σ(wi * (yi - ŷi)²)
+
+wi = 1 / σi²
+
+wi = 1 / xi
+
+wi = 1 / [ŷi * (1 - ŷi)]
+
+E(y) = exp(β0 + β1x1 + ... + βkxk) / [1 + exp(β0 + β1x1 + ... + βkxk)]
+
+π* = ln(π / (1 - π))
+
+R²(prediction) = 1 - [Σ(i=1 to n1+n2)(yi - ŷi)²] / [Σ(i=n1+1 to n1+n2)(yi - ȳ)²]
+
+MSE(prediction) = [Σ(i=n1+1 to n1+n2)(yi - ŷi)²] / [n2 - (k + 1)]
+
+R²(Jackknife) = Σ(yi - ŷ(i))² / Σ(yi - ȳ)²
+
+MSE(Jackknife) = Σ(yi - ŷ(i))² / [n - (k + 1)]
+
+Studentized Residual = εi / [s * √(1 - hii)]
+
+y* = β1*x1 + β2*x2 + ... + βk*xk + ε
+
+β̂R = (X'*X + cI)^(-1)X'*y*
+
+SSE = y'*y - β̂R'*X'*y
+
+ŷi = (1 / √(n - 1)) * ((yi - ȳ) / sy)
+
+x̂i = (1 / √(n - 1)) * ((xi - x̄) / sxi)
+
+βi,R = (sy / sxi) * β̂i,R
+
+β0,R = ȳ - β̂1,R * x̄1 - ... - β̂k,R * x̄k
+
+Var(β̂R) = s² * (X'X + cI)^(-1) * X'X * (X'X + cI)^(-1)
