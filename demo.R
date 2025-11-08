@@ -1767,3 +1767,218 @@ Example:
 “Observation 14 is potentially influential and should be checked.”
 
 #----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+IMPORTANT REGRESSION PROOFS AND DERIVATIONS
+
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+DERIVATION OF LEAST SQUARES ESTIMATES (Simple Linear Regression)
+
+#----------------------------------------------------------------------------
+
+Model: yi = β0 + β1xi + εi
+
+We minimize SSE = Σ(yi – β0 – β1xi)²
+Take partial derivatives:
+
+∂SSE/∂β0 = –2Σ(yi – β0 – β1xi) = 0
+∂SSE/∂β1 = –2Σxi(yi – β0 – β1xi) = 0
+
+Solving the two normal equations gives:
+β̂1 = SSxy / SSxx
+β̂0 = ȳ – β̂1x̄
+
+These minimize SSE and are unbiased estimators of β0 and β1.
+
+#----------------------------------------------------------------------------
+
+MATRIX FORM OF LEAST SQUARES ESTIMATES (Multiple Regression)
+
+#----------------------------------------------------------------------------
+
+Model: y = Xβ + ε
+
+Objective: minimize SSE = (y – Xβ)'(y – Xβ)
+Differentiate and set derivative = 0:
+
+∂SSE/∂β = –2X'(y – Xβ) = 0
+→ X'Xβ̂ = X'y
+→ β̂ = (X'X)^(-1)X'y
+
+Hence β̂ is the vector of least squares coefficients.
+
+#----------------------------------------------------------------------------
+
+PROOF OF DECOMPOSITION OF SUMS OF SQUARES
+
+#----------------------------------------------------------------------------
+
+SST = SSR + SSE
+
+Start from:
+Σ(yi – ȳ)² = Σ(ŷi – ȳ)² + Σ(yi – ŷi)²
+
+Cross-product term = 0 because Σ(ŷi – ȳ)(yi – ŷi) = 0
+Therefore, total variation in y is split into explained and unexplained parts.
+
+#----------------------------------------------------------------------------
+
+EXPECTATION AND VARIANCE OF β̂
+
+#----------------------------------------------------------------------------
+
+E(β̂) = β
+Var(β̂) = σ²(X'X)^(-1)
+
+Proof:
+β̂ = (X'X)^(-1)X'y = (X'X)^(-1)X'(Xβ + ε)
+= β + (X'X)^(-1)X'ε
+
+E(β̂) = β + (X'X)^(-1)X'E(ε) = β
+Var(β̂) = (X'X)^(-1)X'Var(ε)X(X'X)^(-1) = σ²(X'X)^(-1)
+
+#----------------------------------------------------------------------------
+
+PROOF OF UNBIASEDNESS OF s²
+
+#----------------------------------------------------------------------------
+
+Estimator of error variance:
+s² = SSE / (n – (k + 1))
+
+SSE = ε'(I – H)ε where H = X(X'X)^(-1)X'
+
+E(SSE) = E[ε'(I – H)ε] = tr((I – H)σ²) = (n – (k + 1))σ²
+Therefore E(s²) = σ² → unbiased estimator.
+
+#----------------------------------------------------------------------------
+
+RELATIONSHIP BETWEEN R² AND F-STATISTIC
+
+#----------------------------------------------------------------------------
+
+F = (R² / k) / ((1 – R²) / (n – (k + 1)))
+
+Derivation:
+MSR = SSR / k = (R²SST) / k
+MSE = SSE / (n – (k + 1)) = (1 – R²)SST / (n – (k + 1))
+So F = MSR / MSE = (R²/k) / ((1 – R²)/(n – (k + 1)))
+#----------------------------------------------------------------------------
+
+RELATION BETWEEN R AND SLOPE IN SIMPLE LINEAR REGRESSION
+
+#----------------------------------------------------------------------------
+
+R = SSxy / sqrt(SSxx * SSyy)
+b1 = SSxy / SSxx
+
+Hence:
+b1 = R * (sy / sx)
+or equivalently
+R = b1 * (sx / sy)
+
+#----------------------------------------------------------------------------
+
+DERIVATION OF T-STATISTIC FOR β̂i
+
+#----------------------------------------------------------------------------
+
+t = (β̂i – 0) / s(β̂i)
+Since Var(β̂i) = s²cii where cii is the i-th diagonal of (X'X)^(-1),
+s(β̂i) = s * sqrt(cii)
+→ t = β̂i / (s * sqrt(cii))
+This follows t distribution with df = n – (k + 1).
+
+#----------------------------------------------------------------------------
+
+PARTIAL F-TEST DERIVATION
+
+#----------------------------------------------------------------------------
+
+To test added variables jointly:
+F = ((SSE_R – SSE_F) / g) / (SSE_F / (n – (k + 1)))
+where
+SSE_R = SSE for reduced model,
+SSE_F = SSE for full model,
+g = number of added parameters.
+
+Proof uses difference in residual sum of squares between models.
+
+#----------------------------------------------------------------------------
+
+STANDARD ERROR OF PREDICTED VALUE
+
+#----------------------------------------------------------------------------
+
+Predicted value: ŷp = b0 + b1xp
+
+Var(ŷp) = σ²(1/n + (xp – x̄)² / SSxx)
+→ s(ŷp) = s * sqrt(1/n + (xp – x̄)² / SSxx)
+Confidence interval for mean response:
+ŷp ± t * s(ŷp)
+
+For individual prediction:
+Var(y – ŷp) = σ²(1 + 1/n + (xp – x̄)² / SSxx)
+
+#----------------------------------------------------------------------------
+
+ORTHOGONALITY OF RESIDUALS
+
+#----------------------------------------------------------------------------
+
+Prove Σ(yi – ŷi) = 0 and Σ(ŷi – ȳ)(yi – ŷi) = 0
+
+Follows from X'(y – ŷ) = 0
+→ Residuals are orthogonal to fitted values and predictors.
+
+#----------------------------------------------------------------------------
+
+RIDGE REGRESSION ESTIMATOR FORM
+
+#----------------------------------------------------------------------------
+
+β̂R = (X'X + cI)^(-1)X'y
+Proof: minimize (y – Xβ)'(y – Xβ) + cβ'β
+Differentiate and set derivative = 0:
+–2X'(y – Xβ) + 2cβ = 0
+→ (X'X + cI)β = X'y
+→ β̂R = (X'X + cI)^(-1)X'y
+
+#----------------------------------------------------------------------------
+
+DURBIN–WATSON APPROXIMATION
+
+#----------------------------------------------------------------------------
+
+DW ≈ 2(1 – r1)
+where r1 is the lag-1 correlation of residuals.
+
+Proof sketch: numerator of DW expands to
+Σ(e_t^2 + e_{t-1}^2 – 2e_t e_{t-1}) ≈ 2Σe_t^2(1 – r1)
+
+#----------------------------------------------------------------------------
+
+VARIANCE INFLATION FACTOR (VIF) RELATION
+
+#----------------------------------------------------------------------------
+
+VIF_i = 1 / (1 – R_i^2)
+Derived from Var(bi) = σ² / ((1 – R_i^2)SSxx_i)
+Thus large R_i^2 (predictor highly correlated with others) → inflated Var(bi).
+
+#----------------------------------------------------------------------------
+
+COOK’S DISTANCE FORM
+
+#----------------------------------------------------------------------------
+
+D_i = (e_i^2 / ((k + 1)MSE)) * (h_i / (1 – h_i)^2)
+Proof: derived from change in fitted coefficients when observation i is deleted:
+β̂(i) – β̂ = (X'X)^(-1)xi e_i / (1 – h_i)
+and its effect on SSE.
+
