@@ -1065,7 +1065,9 @@ You are explicitly asked about independence of residuals.
 
 1. Variance Inflation Factor (VIF)
 
-Purpose: detect multicollinearity among predictors in multiple regression.
+Purpose:
+VIF detects multicollinearity — when predictors are highly correlated with each other.
+This causes unstable slope estimates and inflated standard errors.
 
 Formula: VIFᵢ = 1 / (1 − Rᵢ²)
 where Rᵢ² is the R² from regressing xᵢ on all other x’s.
@@ -1078,9 +1080,37 @@ VIF = 1 → xᵢ independent of others.
 
 VIF > 10 → serious multicollinearity; coefficients unstable.
 
-Consequence: high VIF ⇒ large standard errors ⇒ t-tests unreliable.
+Consequence: high VIF ⇒ (High VIF inflates) / large standard errors ⇒ t-tests unreliable.
+
+How to calculate manually (no external packages):
+Example for model y ~ x1 + x2 + x3
+fit1 <- lm(x1 ~ x2 + x3)
+fit2 <- lm(x2 ~ x1 + x3)
+fit3 <- lm(x3 ~ x1 + x2)
+Then get each R² from summary(fit)$r.squared
+VIF1 <- 1 / (1 - summary(fit1)$r.squared)
+VIF2 <- 1 / (1 - summary(fit2)$r.squared)
+VIF3 <- 1 / (1 - summary(fit3)$r.squared)
+
+Example:
+x1 <- 1:10
+x2 <- x1 + rnorm(10, 0, 0.5)
+y <- 3 + 2*x1 + rnorm(10)
+fit <- lm(y ~ x1 + x2)
+fit_x1 <- lm(x1 ~ x2)
+fit_x2 <- lm(x2 ~ x1)
+VIF_x1 <- 1 / (1 - summary(fit_x1)$r.squared)
+VIF_x2 <- 1 / (1 - summary(fit_x2)$r.squared)
+print(c(VIF_x1, VIF_x2))
+
+Output example: both ≈ 15 → strong multicollinearity.
+
+Fixes:
+Remove or combine correlated predictors, or use ridge regression.
 
 R code:
+
+install.packages("car")
 
 library(car)
 vif(fit)
@@ -1089,17 +1119,29 @@ vif(fit)
 2. Cook’s Distance (Dᵢ)
 #----------------------------------------------------------------------------
 
-Purpose: measure influence of each observation on fitted coefficients.
+Purpose:
+Measures influence of each observation on the fitted regression coefficients.
 
 Formula: Dᵢ = [(eᵢ²)/( (k + 1) MSE )] × [hᵢ / (1 − hᵢ)²]
+where ei = residual, hi = leverage.
 
 Interpretation:
 
-Dᵢ < 0.5 → no influence.
+Dᵢ < 0.5 → no influence. (Not influential)
 
-0.5 ≤ Dᵢ < 1 → watch.
+0.5 ≤ Dᵢ < 1 → watch. (Check the observation)
 
-Dᵢ ≥ 1 → strong influence; investigate or refit without that case.
+Dᵢ ≥ 1 → strong influence; investigate or refit without that case. (Influential point, possibly distorting model)
+
+R Example (base R only):
+fit <- lm(mpg ~ wt + hp, data = mtcars)
+cd <- cooks.distance(fit)
+plot(cd, type="h", ylab="Cook's D")
+abline(h = 1, col="red", lty=2)
+which(cd > 1)
+
+Interpretation:
+Observations with D > 1 are influential. Check their effect by refitting without them.
 
 R code:
 
@@ -1111,6 +1153,7 @@ plot(cooks.distance(fit), type="h")
 #----------------------------------------------------------------------------
 
 Purpose: identify observations with unusual x-values (high leverage).
+Identifies observations with unusual X-values (extreme predictor combinations).
 
 Formula: hᵢ = xᵢ′ (X′X)⁻¹ xᵢ (diagonal of H = X(X′X)⁻¹X′)
 
@@ -1118,11 +1161,24 @@ Mean leverage: h̄ = (k + 1)/n
 
 Interpretation:
 
-hᵢ ≈ h̄ → typical.
+hᵢ ≈ h̄ → typical. (hi < 2 * mean leverage → Normal)
 
 hᵢ > 2h̄ → high leverage point (potentially influential).
+(hi > 2 * mean leverage → High leverage (could have large impact)
+High leverage + large residual → Influential.)
 
 High leverage + large residual ⇒ influential.
+
+R Example (base R):
+fit <- lm(mpg ~ wt + hp, data = mtcars)
+h <- hatvalues(fit)
+mean_h <- (length(coef(fit))) / nrow(mtcars)
+which(h > 2 * mean_h)
+plot(h, type="h", ylab="Leverage")
+abline(h = 2 * mean_h, col="red", lty=2)
+
+Interpretation:
+Points with large hi values have unusual X combinations.
 
 R code:
 
@@ -1134,8 +1190,10 @@ which(hatvalues(fit) > 2 * (k + 1) / n)
 #----------------------------------------------------------------------------
 
 Purpose: detect outliers in y (unusual residuals after accounting for leverage).
+(Detects outliers in Y after accounting for leverage.)
 
 Formula: rᵢ = eᵢ / [s √(1 − hᵢ)]
+where s = standard error of estimate, hi = leverage.
 
 Interpretation:
 
@@ -1144,6 +1202,20 @@ Interpretation:
 |rᵢ| ≈ 2–3 → suspect.
 
 |rᵢ| > 3 → outlier (check data or model).
+
+(|ri| < 2 → Normal residual
+|ri| 2–3 → Moderately large
+|ri| > 3 → Outlier candidate)
+
+R Example (base R):
+fit <- lm(mpg ~ wt + hp, data = mtcars)
+r <- rstudent(fit)
+which(abs(r) > 3)
+plot(r, ylab="Studentized Residuals")
+abline(h = c(-3,3), col="red", lty=2)
+
+Interpretation:
+Points with |ri| > 3 are potential outliers and should be investigated.
 
 R code:
 
