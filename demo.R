@@ -1564,3 +1564,206 @@ Tests autocorrelation (see previous summary).
 
 ≈ 2 → independent errors; < 2 → positive correlation.
 
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+INTERPRETATION AND EXAM STRATEGY GUIDE
+
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+#----------------------------------------------------------------------------
+
+1. INTERPRETING MODEL COEFFICIENTS
+
+#----------------------------------------------------------------------------
+
+Simple Linear Regression (y ~ x):
+
+b0 (intercept): predicted value of y when x = 0.
+If x = 0 is not meaningful, say “not practically interpretable.”
+
+b1 (slope): estimated change in y for a one-unit increase in x.
+Example: “For every 1 hour increase in exposure, the number of surviving cells increases by 0.15.”
+
+Multiple Linear Regression (y ~ x1 + x2):
+
+bi: change in y for a one-unit increase in xi, holding all other variables constant.
+Example: “When temperature is fixed, an extra gram of fertilizer increases growth by 0.8 units.”
+
+#----------------------------------------------------------------------------
+
+2. INTERPRETING R AND R^2
+
+#----------------------------------------------------------------------------
+
+R^2 = proportion of variability in y explained by the model.
+
+- R^2 = 0.83 → “83% of variation in y is explained by the model.”
+
+- Low R^2 does not mean the model is useless; the slope can still be significant.
+
+- Compare R^2 only for models using the same dependent variable.
+
+#----------------------------------------------------------------------------
+
+3. ADJUSTED R^2
+
+#----------------------------------------------------------------------------
+
+Use when comparing models with different numbers of predictors.
+If adjusted R^2 decreases after adding a variable, the variable does not improve prediction.
+
+#----------------------------------------------------------------------------
+
+4. INTERPRETING P-VALUES
+
+#----------------------------------------------------------------------------
+
+When p < 0.05 → reject H0 → “Evidence that variable x has a significant linear relationship with y.”
+When p > 0.05 → insufficient evidence of relationship.
+
+Example statement:
+“The estimated slope for x2 is 0.42 (p = 0.03). This means that, holding other variables constant, a one-unit increase in x2 increases y by 0.42, and the effect is statistically significant at alpha = 0.05.”
+
+#----------------------------------------------------------------------------
+
+5. CONFIDENCE INTERVAL INTERPRETATION
+
+#----------------------------------------------------------------------------
+
+For a slope (bi):
+“We are 95% confident that the true slope lies between 0.10 and 0.35.”
+If the interval includes 0 → not significant.
+
+For predictions:
+
+Confidence interval = range for mean response.
+
+Prediction interval = range for an individual future observation (always wider).
+
+#----------------------------------------------------------------------------
+
+6. COMMON DIAGNOSTIC INTERPRETATIONS
+
+#----------------------------------------------------------------------------
+
+Residual plot: random scatter → good; curved pattern → wrong model; funnel → unequal variance.
+Normal Q-Q plot: points along line → normal; S-shape → skewed errors.
+Cook’s D: D > 1 → influential point.
+Leverage (hi): large hi > 2 * mean leverage → unusual x-values.
+Studentized residual: |ri| > 3 → possible outlier.
+VIF: > 10 → multicollinearity problem.
+Durbin-Watson: around 2 → independent errors; below 2 → positive correlation.
+
+Typical phrasing:
+“Residuals show random scatter, indicating constant variance and a suitable linear model.”
+
+#----------------------------------------------------------------------------
+
+7. WHEN ASKED “IS THE MODEL ADEQUATE?”
+
+#----------------------------------------------------------------------------
+
+Answer checklist:
+
+R^2 or adjusted R^2 high enough for practical prediction.
+
+Key predictors have p < 0.05.
+
+Residuals roughly normal and random.
+
+No high Cook’s D or leverage points.
+
+Durbin-Watson close to 2.
+
+If all satisfied → “Yes, the model assumptions are met and the model is adequate.”
+
+#----------------------------------------------------------------------------
+
+8. PIECEWISE OR DISCONTINUOUS MODELS
+
+#----------------------------------------------------------------------------
+
+Before k: E(y) = b0 + b1x
+After k: E(y) = b0 + b1x + b2(x - k) (+ b3 if discontinuous)
+
+If b2 significant → slope changes after k.
+If b3 significant → level jump at k.
+If both → joint F-test shows slope + level change.
+
+Example:
+“At x = 70 hours, the slope changes significantly (p = 0.02), meaning growth rate increases after that point.”
+
+#----------------------------------------------------------------------------
+
+9. WEIGHTED AND LOGISTIC MODELS
+
+#----------------------------------------------------------------------------
+
+Weighted regression:
+“Weights correct for unequal variance. Larger weights indicate more reliable observations.”
+
+Logistic regression:
+“Exp(b1) = 1.8 means that each one-unit increase in x raises the odds of success by 80%.”
+
+#----------------------------------------------------------------------------
+
+10. F-TEST AND PARTIAL F-TEST INTERPRETATION
+
+#----------------------------------------------------------------------------
+
+Large F → model or added variables improve fit.
+Example: “F = 12.4, p = 0.001 → The full model explains significantly more variation than the reduced model.”
+If p > 0.05 → “Added variable does not significantly improve the model.”
+
+#----------------------------------------------------------------------------
+
+11. INTERPRETATION PATTERNS TO MEMORIZE
+
+#----------------------------------------------------------------------------
+
+“Holding all else constant, …” → required phrase for multiple regression.
+
+“Significant slope means a linear relationship exists.”
+
+“If CI for slope includes 0, not significant.”
+
+“If Cook’s D > 1, that point heavily influences the model.”
+
+“If residual variance grows with x, constant variance assumption fails.”
+
+#----------------------------------------------------------------------------
+
+12. INTERPRETATION TEMPLATE FOR ANY QUESTION
+
+#----------------------------------------------------------------------------
+
+State what the statistic measures.
+
+Give the observed value and threshold.
+
+State what it implies about the model.
+
+Mention whether assumptions are satisfied.
+
+Example:
+“R^2 = 0.84 shows that 84% of the variation in plant growth is explained by temperature and humidity. Both predictors are significant (p < 0.05), residuals are random, and Cook’s D < 1 for all points, so the model fits well and assumptions appear valid.”
+
+#----------------------------------------------------------------------------
+
+13. QUICK DEFAULT PHRASES
+
+#----------------------------------------------------------------------------
+
+“There is evidence of a linear relationship between x and y.”
+
+“Predictor x is statistically significant at alpha = 0.05.”
+
+“Residuals appear randomly scattered, indicating constant variance.”
+
+“The model explains a large proportion of variability in y.”
+
+“Observation 14 is potentially influential and should be checked.”
+
+#----------------------------------------------------------------------------
